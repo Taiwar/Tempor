@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 using HtmlAgilityPack;
 
@@ -48,9 +49,15 @@ namespace Tempor.modules
             var indexTomorrow = explanation.IndexOf("Tomorrow", StringComparison.Ordinal);
             explanation = explanation.Substring(0, indexTomorrow);
             
+            var embed = new EmbedBuilder();
+            embed.WithTitle("Astronomy Picture of the Day");
+            embed.WithColor(new Color(0x5324b5));
+            embed.WithDescription(explanation);
+            embed.WithImageUrl(imageUrl);
+            embed.WithCurrentTimestamp();
+            embed.WithThumbnailUrl("https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/NASA_logo.svg/200px-NASA_logo.svg.png");
             
-            await ReplyAsync(imageUrl);
-            await ReplyAsync("```" + explanation + "```");
+            await Context.Channel.SendMessageAsync("", false, embed);
         }
     }
 }

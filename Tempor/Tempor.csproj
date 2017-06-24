@@ -128,8 +128,10 @@
     <Compile Include="Program.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="resources\test.m4a" />
     <Content Include="token.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="resources" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

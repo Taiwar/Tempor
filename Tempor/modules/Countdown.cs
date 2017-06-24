@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 using Newtonsoft.Json.Linq;
+
 
 namespace Tempor.modules
 {
@@ -26,18 +28,17 @@ namespace Tempor.modules
 
             var cdownUrl = "https://muellersites.net/countdown/view/" + id;
 
-            /*var reply = "```" +
-                        "Title: " + fullTitle + "\n" +
-                        "Ends: " + endDate + "\n" +
-                        "Url: " + cdownUrl + "\n" +
-                        "```";
-                        */
-
-            var reply = "__**" + fullTitle + "**__\n\n" +
-                        "*Ends:* " + endDate + "\n" +
-                        "*Url:* " + cdownUrl + "\n";
-
-            await ReplyAsync(reply);
+            var embed = new EmbedBuilder();
+            embed.WithTitle(fullTitle + "\n");
+            embed.WithColor(new Color(0xfe9901));
+            embed.AddField(new EmbedFieldBuilder().WithName("__End Date__").WithValue(endDate));
+            embed.AddField(new EmbedFieldBuilder().WithName("__Url__").WithValue(cdownUrl));
+            embed.WithCurrentTimestamp();
+            embed.WithFooter(new EmbedFooterBuilder().WithIconUrl("https://muellersites.net/django/static/general/image/logo.png")
+                .WithText("Muellersites.net"));
+            embed.WithThumbnailUrl("https://muellersites.net/django/static/general/image/logo.png");
+            
+            await Context.Channel.SendMessageAsync("", false, embed);
         }
         
         // °countdown byid -> *countdown info*
@@ -56,18 +57,17 @@ namespace Tempor.modules
 
             var cdownUrl = "https://muellersites.net/countdown/view/" + id;
 
-            /*var reply = "```" +
-                        "Title: " + fullTitle + "\n" +
-                        "Ends: " + endDate + "\n" +
-                        "Url: " + cdownUrl + "\n" +
-                        "```";
-                        */
-
-            var reply = "__**" + fullTitle + "**__\n\n" +
-                        "*Ends:* " + endDate + "\n" +
-                        "*Url:* " + cdownUrl + "\n";
-
-            await ReplyAsync(reply);
+            var embed = new EmbedBuilder();
+            embed.WithTitle(fullTitle + "\n");
+            embed.WithColor(new Color(0xfe9901));
+            embed.AddField(new EmbedFieldBuilder().WithName("__End Date__").WithValue(endDate));
+            embed.AddField(new EmbedFieldBuilder().WithName("__Url__").WithValue(cdownUrl));
+            embed.WithCurrentTimestamp();
+            embed.WithFooter(new EmbedFooterBuilder().WithIconUrl("https://muellersites.net/django/static/general/image/logo.png")
+                .WithText("Muellersites.net"));
+            embed.WithThumbnailUrl("https://muellersites.net/django/static/general/image/logo.png");
+            
+            await Context.Channel.SendMessageAsync("", false, embed);
         }
     }
 }
