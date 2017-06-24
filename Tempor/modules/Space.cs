@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using Discord.Commands;
 using HtmlAgilityPack;
@@ -18,12 +19,38 @@ namespace Tempor.modules
             var doc = web.Load(url);
 
             var relImageUrl = doc.DocumentNode.SelectSingleNode("//img[@src]").Attributes["src"].Value;
-            var explanation = doc.DocumentNode.SelectSingleNode("//img[@src]").Attributes["src"].Value;
-            
-            var sb = new StringBuilder();
+            var root = doc.DocumentNode.SelectSingleNode("//b[.=' Explanation: ']").ParentNode;
+            var ex = new StringBuilder();
+			
+            foreach (var node in root.ChildNodes)
+            {
+                if (!node.HasChildNodes)
+                {
+                    var text = node.InnerText;
+                    if (!string.IsNullOrEmpty(text))
+                        ex.AppendLine(text.Trim());
+                } else {
+                    foreach (var innerNode in node.ChildNodes)
+                    {
+                        var text = innerNode.InnerText;
+                        if (!string.IsNullOrEmpty(text))
+                            ex.AppendLine(text.Trim());
+                    }
+                }
+            }
+            var explanation = ex.ToString();
+						
             var imageUrl = "https://apod.nasa.gov/apod/" + relImageUrl;
+		
+            var indexExplanation = explanation.IndexOf("Explanation", StringComparison.Ordinal);
+            explanation = explanation.Substring(indexExplanation, explanation.Length - indexExplanation);
+		
+            var indexTomorrow = explanation.IndexOf("Tomorrow", StringComparison.Ordinal);
+            explanation = explanation.Substring(0, indexTomorrow);
+            
             
             await ReplyAsync(imageUrl);
+            await ReplyAsync("```" + explanation + "```");
         }
     }
 }
