@@ -56,7 +56,8 @@ namespace Tempor.modules
             embed.WithImageUrl(imageUrl);
             embed.WithCurrentTimestamp();
             embed.WithThumbnailUrl("https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/NASA_logo.svg/200px-NASA_logo.svg.png");
-            
+
+            // await Context.Message.DeleteAsync();
             await Context.Channel.SendMessageAsync("", false, embed);
         }
     }

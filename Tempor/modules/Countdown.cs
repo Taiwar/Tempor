@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Discord;
@@ -22,23 +23,33 @@ namespace Tempor.modules
             
             Console.WriteLine(responseString);
             var joResponse = JObject.Parse(responseString);
-            var id = Convert.ToInt32(joResponse["id"][0]);
-            var fullTitle = Convert.ToString(joResponse["title"][0]);
-            var endDate = Convert.ToString(joResponse["date"][0]);
+            if (joResponse["id"] != null && joResponse["id"].Any())
+            {
+                var id = Convert.ToInt32(joResponse["id"][0]);
+                var fullTitle = Convert.ToString(joResponse["title"][0]);
+                var endDate = Convert.ToString(joResponse["date"][0]);
 
-            var cdownUrl = "https://muellersites.net/countdown/view/" + id;
 
-            var embed = new EmbedBuilder();
-            embed.WithTitle(fullTitle + "\n");
-            embed.WithColor(new Color(0xfe9901));
-            embed.AddField(new EmbedFieldBuilder().WithName("__End Date__").WithValue(endDate));
-            embed.AddField(new EmbedFieldBuilder().WithName("__Url__").WithValue(cdownUrl));
-            embed.WithCurrentTimestamp();
-            embed.WithFooter(new EmbedFooterBuilder().WithIconUrl("https://muellersites.net/django/static/general/image/logo.png")
-                .WithText("Muellersites.net"));
-            embed.WithThumbnailUrl("https://muellersites.net/django/static/general/image/logo.png");
+                var cdownUrl = "https://muellersites.net/countdown/view/" + id;
+
+                var embed = new EmbedBuilder();
+                embed.WithTitle(fullTitle + "\n");
+                embed.WithColor(new Color(0xfe9901));
+                embed.AddField(new EmbedFieldBuilder().WithName("__End Date__").WithValue(endDate));
+                embed.AddField(new EmbedFieldBuilder().WithName("__Url__").WithValue(cdownUrl));
+                embed.WithCurrentTimestamp();
+                embed.WithFooter(new EmbedFooterBuilder()
+                    .WithIconUrl("https://muellersites.net/django/static/general/image/logo.png")
+                    .WithText("Muellersites.net"));
+                embed.WithThumbnailUrl("https://muellersites.net/django/static/general/image/logo.png");
+
+                await Context.Channel.SendMessageAsync("", false, embed);
+            }
+            else
+            {
+                await Context.Channel.SendMessageAsync("Couldn't find countdown");
+            }
             
-            await Context.Channel.SendMessageAsync("", false, embed);
         }
         
         // °countdown byid -> *countdown info*
@@ -51,23 +62,31 @@ namespace Tempor.modules
             var responseString = await client.GetStringAsync(url + "?id=" + id);
             
             Console.WriteLine(responseString);
-            var joResponse = JObject.Parse(responseString);
-            var fullTitle = Convert.ToString(joResponse["title"]);
-            var endDate = Convert.ToString(joResponse["date"]);
-
-            var cdownUrl = "https://muellersites.net/countdown/view/" + id;
-
-            var embed = new EmbedBuilder();
-            embed.WithTitle(fullTitle + "\n");
-            embed.WithColor(new Color(0xfe9901));
-            embed.AddField(new EmbedFieldBuilder().WithName("__End Date__").WithValue(endDate));
-            embed.AddField(new EmbedFieldBuilder().WithName("__Url__").WithValue(cdownUrl));
-            embed.WithCurrentTimestamp();
-            embed.WithFooter(new EmbedFooterBuilder().WithIconUrl("https://muellersites.net/django/static/general/image/logo.png")
-                .WithText("Muellersites.net"));
-            embed.WithThumbnailUrl("https://muellersites.net/django/static/general/image/logo.png");
             
-            await Context.Channel.SendMessageAsync("", false, embed);
+            var joResponse = JObject.Parse(responseString);
+            if (joResponse["error"].Any()) 
+            {
+                var fullTitle = Convert.ToString(joResponse["title"]);
+                var endDate = Convert.ToString(joResponse["date"]);
+    
+                var cdownUrl = "https://muellersites.net/countdown/view/" + id;
+    
+                var embed = new EmbedBuilder();
+                embed.WithTitle(fullTitle + "\n");
+                embed.WithColor(new Color(0xfe9901));
+                embed.AddField(new EmbedFieldBuilder().WithName("__End Date__").WithValue(endDate));
+                embed.AddField(new EmbedFieldBuilder().WithName("__Url__").WithValue(cdownUrl));
+                embed.WithCurrentTimestamp();
+                embed.WithFooter(new EmbedFooterBuilder().WithIconUrl("https://muellersites.net/django/static/general/image/logo.png")
+                    .WithText("Muellersites.net"));
+                embed.WithThumbnailUrl("https://muellersites.net/django/static/general/image/logo.png");
+                
+                await Context.Channel.SendMessageAsync("", false, embed);
+            }
+            else
+            {
+                await Context.Channel.SendMessageAsync("Couldn't find countdown");
+            }
         }
     }
 }
